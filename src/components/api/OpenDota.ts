@@ -39,3 +39,32 @@ export const getWinrate = async (playerId:number) => {
     
   }
 }
+
+export const getFriend = async (playerId:number) => {
+  try {
+    const url = `https://api.opendota.com/api/players/${playerId}/peers`
+
+    const deepResponse = await fetch(url);
+    const friendStats = await deepResponse.json();
+    const bestFriend = friendStats.shift()
+    console.log(bestFriend);
+    return bestFriend
+  } catch (error) {
+    console.log('проблемы друга')
+  }
+}
+
+// /players/{account_id}/totals
+
+export const totals = async (playerId:number) => {
+  try {
+    const url = `https://api.opendota.com/api/players/${playerId}/totals`
+
+    const deepResponse = await fetch(url);
+    const totalStats = await deepResponse.json();
+    console.log(totalStats);
+    return totalStats
+  } catch (error) {
+    console.log('проблемы друга')
+  }
+}

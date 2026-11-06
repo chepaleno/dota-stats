@@ -1,0 +1,58 @@
+.thirdCardMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.kills {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  width: 280px;
+  /* background-color: #0f3460; */
+  background: linear-gradient(to right, #3ad014, #0f3460, #3ad014);
+  border-radius: 10px;
+}
+.deaths {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  width: 280px;
+  /* background-color: #0f3460; */
+  background: linear-gradient(to right, #b11414, #0f3460, #b11414);
+  border-radius: 10px;
+}
+.assists {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  width: 280px;
+  /* background-color: #0f3460; */
+  background: linear-gradient(to right, #fe8300, #0f3460, #fe8300);
+  border-radius: 10px;
+}
+.kda {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  width: 280px;
+  /* background-color: #0f3460; */
+  background: linear-gradient(to right, #1482b1, #0f3460, #1482b1);
+  border-radius: 10px;
+}
+.statskda{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.grass{
+    margin-top: 25px;
+  max-width: 1000px;
+  align-content: center;
+  background-color: #0f3460;
+  padding: 6px;
+  border: 3px solid #16213e;
+  border-radius: 10px;
+}

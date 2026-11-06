@@ -1,6 +1,18 @@
 import { useState } from "react";
 import "./App.css";
-import { search, deepSearch, getWinrate } from "./components/api/OpenDota";
+import SecondCard from "./components/SecondCard/SecondCard";
+import {
+  search,
+  deepSearch,
+  getWinrate,
+  getFriend,
+  totals,
+} from "./components/api/OpenDota";
+import FirstCard from "./components/FirstCard/FirstCard";
+import ThirdCard from "./components/ThirdCard/ThirdCard";
+import FourthCard from "./components/FourthCard/FourthCard";
+import FifthCard from "./components/FifthCard/FifthCard";
+import SixthCard from "./components/SixthCard/SixthCard";
 
 interface PlayerStats {
   name: string;
@@ -15,8 +27,44 @@ interface PlayerStats {
   wr: number | null;
 }
 
+interface FriendStats {
+  name: string;
+  // mmr: number | null;
+  // dotaPlus: boolean;
+  avatar: string;
+  // medal: number;
+  // star: number;
+  // win: number | null;
+  // with_lose: number | null;
+  with_games: number | null;
+  with_win: number | null;
+  with_lose: number | null;
+  wr: number | null;
+}
+
+interface totalStats {
+  kills: number | null;
+  deaths: number | null;
+  assists: number | null;
+  kda: number | null;
+
+  gpm: number | null;
+  xpm: number | null;
+  lastHits: number | null;
+  denies: number | null;
+
+  heroDamage: number | null;
+  towerDamage: number | null;
+  healing: number | null;
+
+  // throwsGame:getTotalStats[0].sum
+  // comebacks:getTotalStats[0].sum
+  pings: number | null;
+  duration: number | null;
+}
+
 function App() {
-  const [playerName, setPlayerName] = useState<string>("dendi");
+  const [playerName, setPlayerName] = useState<string>("Микро Ивaшкa");
   const [moreThanOneName, setMoreThanOneName] = useState<boolean>(false);
   const [stats, setStats] = useState<PlayerStats | null>(null);
   const [error, setError] = useState<string>("");
@@ -47,6 +95,51 @@ function App() {
       games: allGames ? allGames : null,
       wr: roundTo((playerWinrate.win / allGames) * 100, 2),
     });
+
+    const bestFriend = await getFriend(playerData.profile.account_id);
+    setFriend({
+      name: bestFriend.personaname,
+      avatar: bestFriend.avatarfull,
+      with_games: bestFriend.with_games,
+      with_win: bestFriend.with_win,
+      with_lose: bestFriend.with_games - bestFriend.with_win,
+      wr: roundTo((bestFriend.with_win / bestFriend.with_games) * 100, 2),
+    });
+
+    const getTotalStats = await totals(playerData.profile.account_id);
+    console.log(getTotalStats);
+    setTotalStats({
+      kills: getTotalStats[0].sum,
+      deaths: getTotalStats[1].sum,
+      assists: getTotalStats[2].sum,
+      kda: roundTo(
+        ((getTotalStats[0].sum + getTotalStats[2].sum) / getTotalStats[1].sum) *
+          1,
+        2,
+      ),
+      // (getTotalStats[0].sum + getTotalStats[2].sum) / getTotalStats[1].sum,
+      // getTotalStats[3].sum,
+
+      gpm: getTotalStats[4].sum / getTotalStats[4].n,
+      xpm: getTotalStats[5].sum / getTotalStats[5].n,
+      lastHits: getTotalStats[6].sum,
+      denies: getTotalStats[7].sum,
+
+      heroDamage: getTotalStats[11].sum,
+      towerDamage: getTotalStats[12].sum,
+      healing: getTotalStats[13].sum,
+      pings: getTotalStats[23].sum / getTotalStats[23].n,
+
+      // throwsGame:getTotalStats[0].sum,
+      // comebacks:getTotalStats[0].sum,
+
+      duration: getTotalStats[9].sum,
+    });
+    setNumberPage(1);
+    // setFriend(
+    //   friend
+    // )
+    // console.log(friend.personaname)
     // console.log(stats);
     // console.log(playerData.profile.account_id);
 
@@ -54,6 +147,10 @@ function App() {
     // console.log(playerWinrate);
   };
   const [playerBoard, setPlayerBoard] = useState([]);
+  const [numberPage, setNumberPage] = useState(1);
+  const [friend, setFriend] = useState<FriendStats | null>(null);
+  const [totalStats, setTotalStats] = useState<totalStats | null>(null);
+  console.log(totalStats);
 
   const onClickPlayerName = async () => {
     setIsLoading(true);
@@ -65,7 +162,7 @@ function App() {
       if (answer.length > 1) {
         setMoreThanOneName(true);
         setPlayerBoard(answer);
-        console.log(playerBoard);
+        // console.log(playerBoard);
         setIsLoading(false);
       }
       if (answer.length === 1) {
@@ -97,11 +194,51 @@ function App() {
       setMoreThanOneName(false);
       setIsLoading(false);
     } catch (error) {
-      setIsLoading(false)
-      setError("Ошибка при загрузке игрока")
+      setIsLoading(false);
+      setError("Ошибка при загрузке игрока");
       console.log("ошибка");
     }
   };
+
+  const backArrowClick = () => {
+    if (numberPage > 1) {
+      setNumberPage((prev) => prev - 1);
+    } else {
+      setNumberPage(6)
+    }
+  };
+
+  const UpArrowClick = () => {
+    if (numberPage < 6) {
+      setNumberPage((prev) => prev + 1);
+    } else {
+      setNumberPage(1)
+    }
+  };
+  let page;
+  switch (numberPage) {
+    case 1:
+      page = 1;
+      break;
+    case 2:
+      page = 2;
+      break;
+    case 3:
+      page = 3;
+      break;
+    case 4:
+      page = 4;
+      break;
+    case 5:
+      page = 5;
+      break;
+    case 6:
+      page = 6;
+      break;
+    default:
+  }
+
+  // console.log(numberPage);
 
   return (
     <div className="app-container">
@@ -123,47 +260,17 @@ function App() {
       {error ? <div className="Error">{error}</div> : null}
 
       <div className={`${stats ? "playerStats" : null}`}>
-        {stats ? (
-          <div>
-            <div className="headerIconRank">
-              <img className="avatar" src={stats?.avatar} />
-              {stats.medal > 0 ? (
-                <div className="rankAnd">
-                  <img
-                    className="medal"
-                    src={`https://www.opendota.com/assets/images/dota2/rank_icons/rank_icon_${stats?.medal}.png`}
-                    alt=""
-                  />
-                  <img
-                    className="star"
-                    src={`https://www.opendota.com/assets/images/dota2/rank_icons/rank_star_${stats?.star}.png`}
-                    alt=""
-                  />
-                </div>
-              ) : null}
-            </div>
-            <div className="nickNameDiv">{stats?.name}</div>
-            <div className="bottomStats">
-              <div className="winLoseAll">
-                <div>{stats?.win ? `${stats?.win} W` : null}</div>
-                <div>{stats?.games ? `${stats?.games} All` : null}</div>
-                <div>{stats?.lose ? `${stats?.lose} L` : null}</div>
-              </div>
-              <div className="lastStats">
-                <div className="winrate">
-                  {stats?.win ? `${stats?.wr}%` : null}
-                </div>
-                <div className="winrate">
-                  {" "}
-                  {stats?.mmr ? Math.trunc(stats?.mmr) + " MMR" : "Нет рйтинга"}
-                </div>
-                <div className="winrate">
-                  {stats?.dotaPlus ? "Гейб доволен" : "Гейб не доволен"}
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : null}
+        {stats && page === 1 ? <FirstCard stats={stats} /> : null}
+        {stats && page === 2 ? <SecondCard friend={friend} /> : null}
+        {stats && page === 3 ? <ThirdCard totalStats={totalStats} /> : null}
+        {stats && page === 4 ? <FourthCard totalStats={totalStats} /> : null}
+        {stats && page === 5 ? <FifthCard totalStats={totalStats} /> : null}
+        {stats && page === 6 ? <SixthCard totalStats={totalStats} /> : null}
+
+        {/* <div className="navigate_arrows">
+          <div className="arrow backArrow" onClick={backArrowClick}>⬅️</div>
+          <div className="arrow upArrow" onClick={UpArrowClick}>➡️</div>
+        </div> */}
       </div>
       <div>
         {moreThanOneName
@@ -191,10 +298,29 @@ function App() {
             )
           : null}
       </div>
+      {stats ? (
+        <div className="navigate_arrows">
+          <div className="arrow backArrow" onClick={backArrowClick}>
+            ⬅️
+          </div>
+          <div className="point">
+            <span className={`${page === 1 ? 'activePoint' : ''}`}>.</span>
+            <span className={`${page === 2 ? 'activePoint' : ''}`}>.</span>
+            <span className={`${page === 3 ? 'activePoint' : ''}`}>.</span>
+            <span className={`${page === 4 ? 'activePoint' : ''}`}>.</span>
+            <span className={`${page === 5 ? 'activePoint' : ''}`}>.</span>
+            <span className={`${page === 6 ? 'activePoint' : ''}`}>.</span>
+          </div>
+          <div className="arrow upArrow" onClick={UpArrowClick}>
+            ➡️
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
 
 export default App;
 
-//Микро Ивaшкa
+// Микро Ивaшкa
+// CoBYnyA

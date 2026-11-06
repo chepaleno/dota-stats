@@ -1,0 +1,75 @@
+/* .playerStats {
+  width: 300px;
+  height: 400px;
+  background-color: #16213e;
+  border: 4px solid #0f3460;
+  border-radius: 8px;
+  background: linear-gradient(to bottom, #16213e 60%, #3138b4 100%);
+} */
+
+.secondCardMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* gap: 10px; */
+}
+
+.secondAvatar {
+  width: 150px;
+  height: 150px;
+  margin-top: 10px;
+  /* margin-left: 10px; */
+  border: 6px solid #0f3460;
+  border-radius: 8px;
+}
+
+.nickNameSecondDiv {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 300px;
+  background-color: #0f3460;
+  min-height: 50px;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 20px;
+  gap: 4px;
+}
+
+.afterName{
+  font-size: 13px;
+}
+
+.fraza {
+  margin-top: 10px;
+}
+
+.winLoseAllSecond {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  width: 280px;
+  /* background-color: #0f3460; */
+  background: linear-gradient(to right, #3ad014, #0f3460, #b11414);
+  border-radius: 10px;
+}
+
+.secondWinrate{
+  max-width: 80px;
+  align-content: center;
+  margin-top: 15px;
+  background-color: #0f3460;
+  padding: 6px;
+  border: 3px solid #16213e;
+  border-radius: 10px;
+}
+
+/* .friendNameHead{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  
+} */

@@ -129,3 +129,33 @@
 .Error{
   color: #b11414;
 }
+
+/**/
+
+.navigate_arrows{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 495px;
+  gap: 120px;
+  user-select: none;
+}
+
+.point{
+  /* margin-bottom: 100px; */
+  display: flex;
+  gap: 10px;
+  font-size: 25px;
+  margin-bottom: 12px;
+  position: absolute;
+}
+
+.arrow{
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.activePoint{
+  color: rgb(254, 0, 0);
+}
